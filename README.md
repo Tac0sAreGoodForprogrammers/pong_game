@@ -26,7 +26,7 @@ A bare-metal Snake game written entirely in x86 Assembly. No OS, just BIOS calls
 ### ⚙️ Planned Features
 
 - Bootable `.img` that runs Snake instantly on real or virtual hardware.
-- Classic 80x25 text-mode snake (at first).
+- Classic 80x25 pixel-mode snake(at least lets start with text-mode)
 - 🐛 Retro vibes. BIOS-driven madness.
 
 ---
@@ -36,4 +36,4 @@ A bare-metal Snake game written entirely in x86 Assembly. No OS, just BIOS calls
 ```bash
 make        # build bootloader.img
 ```
-then run using any virtualization software 
+then run using any virtualization software (or flash it to usb)
