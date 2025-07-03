@@ -1,36 +1,44 @@
-; bootloader.asm — Real mode x86 Hello World
-; Assemble with: nasm -f bin bootloader.asm -o bootloader.img
-; Run with: qemu-system-i386 -drive format=raw,file=bootloader.img
-
-org 0x7c00            ; BIOS loads us here
+; bootloader.asm
+org 0x7C00
 
 start:
-    ; Set video mode 0x03 (80x25 text mode)
+    ; Set up segment registers
+    cli
+    xor ax, ax
+    mov ds, ax
+    mov es, ax
+    mov ss, ax
+    mov sp, 0x7C00  ; stack grows down from here
+    sti
+
+    ; Set video mode 03h (text mode)
     mov ah, 0x00
     mov al, 0x03
     int 0x10
 
-    ; Print string pointed by SI
-    mov si, message
-
+    ; Display "Starting Snake..."
+    mov si, msg_start
 print_loop:
-    lodsb               ; Load byte at SI into AL and advance SI
-    or al, al           ; Check if it's null terminator
-    jz hang             ; If yes, jump to hang
-
-    mov ah, 0x0E        ; BIOS teletype output function
-    mov bh, 0x00        ; Page number
-    mov bl, 0x07        ; Text attribute (light gray on black)
-    int 0x10            ; Print character in AL
-
+    lodsb
+    or al, al
+    jz after_print
+    mov ah, 0x0E
+    int 0x10
     jmp print_loop
 
+after_print:
+    call snake_main   ; jump to snake logic
+
 hang:
-    cli                 ; Clear interrupts
-    hlt                 ; Halt CPU
-    jmp hang            ; Just in case HLT is ignored
+    cli
+    hlt
+    jmp hang
 
-message db "Hello, World!", 0    ; Null-terminated message
+msg_start db "Starting Snake...", 0
 
-times 510 - ($ - $$) db 0        ; Pad to 510 bytes
-dw 0xAA55                        ; Boot signature
+; include the game logic directly (for now)
+%include "snake_logic.asm"
+
+; pad to 510 bytes, then add boot signature
+times 510 - ($ - $$) db 0
+dw 0xAA55
