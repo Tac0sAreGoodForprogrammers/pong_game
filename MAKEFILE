@@ -1,0 +1,8 @@
+bootloader.img: bootloader.asm
+	nasm -f bin bootloader.asm -o bootloader.img
+
+run: bootloader.img
+	qemu-system-i386 -drive format=raw,file=bootloader.img
+
+clean:
+	rm -f bootloader.img
