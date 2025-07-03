@@ -1,18 +1,20 @@
 ; snake_logic.asm
+org 0x8000
 
 snake_main:
-    ; for now, just display a placeholder character in a loop
-    mov si, snake_msg
+    mov si, welcome_msg
 
-snake_loop:
+print_welcome:
     lodsb
     or al, al
-    jz .done
+    jz done
     mov ah, 0x0E
     int 0x10
-    jmp snake_loop
+    jmp print_welcome
 
-.done:
-    ret
+done:
+    cli
+    hlt
+    jmp $
 
-snake_msg db "Snake logic not yet implemented!", 0
+welcome_msg db "Welcome to Snake Stage 2!", 0
